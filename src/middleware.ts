@@ -109,6 +109,11 @@ async function setCacheId(request: NextRequest, response: NextResponse) {
  * Middleware to handle region selection and cache id.
  */
 export async function middleware(request: NextRequest) {
+  // Skip redirect logic for /plasmic-host
+  if (request.nextUrl.pathname === "/plasmic-host") {
+    return NextResponse.next();
+  }
+
   const searchParams = request.nextUrl.searchParams
   const cartId = searchParams.get("cart_id")
   const checkoutStep = searchParams.get("step")
