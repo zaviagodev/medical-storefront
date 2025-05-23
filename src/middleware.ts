@@ -110,7 +110,7 @@ async function setCacheId(request: NextRequest, response: NextResponse) {
  */
 export async function middleware(request: NextRequest) {
   // Skip redirect logic for /plasmic-host
-  if (request.nextUrl.pathname === "/plasmic-host") {
+  if (request.nextUrl.pathname === "/plasmic-host" || request.nextUrl.pathname === "/preview") {
     return NextResponse.next();
   }
 
