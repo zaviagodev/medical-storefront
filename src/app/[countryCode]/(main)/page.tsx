@@ -1,23 +1,13 @@
-import { PlasmicComponent } from '@plasmicapp/loader-nextjs';
-import { PLASMIC } from '../../../plasmic-init';
-import { PlasmicClientRootProvider } from '../../../plasmic-init-client';
+import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
+import { PLASMIC } from "../../../plasmic-init";
 
 // Using incremental static regeneration, will invalidate this page
 // after 300s (no deploy webhooks needed)
 export const revalidate = 300;
 
 // Render the page or component from Plasmic.
-export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-  const plasmicData = await PLASMIC.fetchComponentData('/it');
+export default async function Home() {
+  const plasmicData = await PLASMIC.fetchComponentData("/it");
   const compMeta = plasmicData.entryCompMetas[0];
-  return (
-    <PlasmicClientRootProvider
-      prefetchedData={plasmicData}
-      pageRoute={compMeta.path}
-      pageParams={compMeta.params}
-      pageQuery={searchParams}
-    >
-      <PlasmicComponent component={compMeta.displayName} />
-    </PlasmicClientRootProvider>
-  );
+  return <PlasmicComponent component={compMeta.displayName} />;
 }
