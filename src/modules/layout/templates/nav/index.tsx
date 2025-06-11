@@ -75,9 +75,9 @@ export async function NavigationHeader() {
               <AccountButton customer={customer} />
             </Suspense>
 
-            <Suspense fallback={<SkeletonCartButton />}>
+            {/* <Suspense fallback={<SkeletonCartButton />}>
               <CartButton />
-            </Suspense>
+            </Suspense> */}
           </div>
         </div>
       </header>
