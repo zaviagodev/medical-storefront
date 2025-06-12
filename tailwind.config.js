@@ -25,6 +25,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
+        sukhumvit: ["Sukhumvit Set"],
       },
       keyframes: {
         "accordion-open": {
