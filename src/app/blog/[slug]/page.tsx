@@ -1,4 +1,3 @@
-import { PlasmicClientRootProvider } from "@/plasmic-init-client";
 import { PlasmicComponent } from "@plasmicapp/loader-nextjs";
 
 export default async function BlogPost({
@@ -6,10 +5,11 @@ export default async function BlogPost({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  console.log("params =>", await params);
+  // console.log("params =>", await params);
+
   return (
     // <PlasmicClientRootProvider pageParams={await params}>
-    <PlasmicComponent component="/blog/[slug]" />
+    <PlasmicComponent component="/blog/[slug]" componentProps={await params} />
     // </PlasmicClientRootProvider>
   );
 }
