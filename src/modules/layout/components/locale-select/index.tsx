@@ -55,7 +55,7 @@ export const LocaleSelect = ({ className }: { className?: string }) => {
           <>
             <ListboxButton
               className={clx(
-                "font-bold text-white px-0 py-0 bg-transparent border-none shadow-none focus:outline-none cursor-pointer flex items-center justify-center gap-x-2",
+                "text-white px-0 py-0 bg-transparent border-none shadow-none focus:outline-none cursor-pointer flex items-center justify-center gap-x-2",
                 "uppercase"
               )}
               style={{ minWidth: 32 }}
