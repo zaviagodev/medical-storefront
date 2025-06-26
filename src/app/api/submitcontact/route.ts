@@ -71,7 +71,9 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${contentfulAccessToken}`,
-        "X-Contentful-Content-Type": "contact"
+        "X-Contentful-Content-Type": "contact",
+        "X-Contentful-Version": "1",
+        "X-Contentful-Publish": "true"
       },
       body: JSON.stringify(contactData)
     })
