@@ -32,67 +32,72 @@ export async function POST(request: NextRequest) {
     }
     
     // Check if environment variables are set
-    const sanityToken = process.env.SANITY_API_TOKEN
-    const sanityProjectId = process.env.SANITY_PROJECT_ID || '0zt5akmw'
-    const sanityDataset = process.env.SANITY_DATASET || 'production'
-    const sanityApiVersion = process.env.SANITY_API_VERSION || 'v2023-06-06'
+    const contentfulSpaceId = process.env.CONTENTFUL_SPACE_ID
+    const contentfulAccessToken = process.env.CONTENTFUL_ACCESS_TOKEN
     
-    if (!sanityToken) {
-      console.error('SANITY_API_TOKEN environment variable is not set')
+    if (!contentfulSpaceId || !contentfulAccessToken) {
+      console.error('CONTENTFUL_SPACE_ID or CONTENTFUL_ACCESS_TOKEN environment variables are not set')
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
       )
     }
     
-    // Prepare data for Sanity.io
+    // Prepare data for Contentful
     const contactData = {
-      firstName,
-      lastName,
-      workEmail,
-      subject,
-      message,
-      status: "new",
-      createdAt: new Date().toISOString()
+      fields: {
+        firstName: {
+          "en-US": firstName
+        },
+        lastName: {
+          "en-US": lastName
+        },
+        workEmail: {
+          "en-US": workEmail
+        },
+        subject: {
+          "en-US": subject
+        },
+        message: {
+          "en-US": message
+        }
+      }
     }
     
-    // Send data to Sanity.io
-    const sanityUrl = `https://${sanityProjectId}.api.sanity.io/${sanityApiVersion}/data/mutate/${sanityDataset}`
-    
-    const sanityResponse = await fetch(sanityUrl, {
+    // Send data to Contentful
+    const contentfulUrl = `https://api.contentful.com/spaces/${contentfulSpaceId}/environments/master/entries`
+    const contentfulResponse = await fetch(contentfulUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sanityToken}`
+        "Authorization": `Bearer ${contentfulAccessToken}`,
+        "X-Contentful-Content-Type": "contact"
       },
-      body: JSON.stringify({
-        mutations: [{
-          create: {
-            _type: "contact",
-            ...contactData
-          }
-        }]
-      })
+      body: JSON.stringify(contactData)
     })
-    
-    if (!sanityResponse.ok) {
-      const errorData = await sanityResponse.text()
-      console.error('Sanity.io API error:', errorData)
+
+    console.log("Contentful Space ID:", contentfulSpaceId)
+
+    console.log("Contentful Response:", contentfulResponse)
+
+    if (!contentfulResponse.ok) {
+      const errorData = await contentfulResponse.text()
+      console.error('Contentful API error:', errorData)
       return NextResponse.json(
         { error: 'Failed to save contact to database' },
         { status: 500 }
       )
     }
     
-    const sanityData = await sanityResponse.json()
-    console.log("Sanity.io Success:", sanityData)
+    const contentfulData = await contentfulResponse.json()
+    console.log("Contentful Success:", contentfulData)
     
     // Return success response
     return NextResponse.json({
       message: 'Contact form submitted successfully',
-      contactId: sanityData.results?.[0]?.id || contactData.createdAt,
-      timestamp: contactData.createdAt,
-      sanityResponse: sanityData
+      contactId: contentfulData.sys?.id || new Date().toISOString(),
+      timestamp: contentfulData.sys?.createdAt || new Date().toISOString(),
+      contentfulResponse: contentfulData
     }, { status: 200 })
     
   } catch (error) {
